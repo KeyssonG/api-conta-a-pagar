@@ -1,6 +1,8 @@
 package desafio.deliver.api_conta_pagar.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,9 +18,15 @@ import java.util.Date;
 @AllArgsConstructor
 public class RequestCreateAccountPayable {
 
+    @NotBlank(message = "O nome é obrigatório.")
     private String name;
+
+    @NotNull(message = "O valor de origem é obrigatório.")
     private BigDecimal originationValue;
 
+    @NotNull(message = "A data de vencimento é obrigatória.")
     private LocalDate dueDate;
+
+    @NotNull(message = "A data de pagamento é obrigatória.")
     private LocalDate paymentDate;
 }
