@@ -11,7 +11,7 @@ FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
-COPY --from=build /app/target/api-conta-pagar-*.jar app.jar
+COPY --from=build /app/target/api-conta-apagar-*.jar app.jar
 
 # Define o comando para executar a aplicação
 ENTRYPOINT ["java", "-jar", "app.jar"]
