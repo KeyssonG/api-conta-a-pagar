@@ -1,6 +1,6 @@
 package desafio.deliver.api_conta_pagar.service;
 
-import desafio.deliver.api_conta_pagar.dto.RequestCreateAccountPayable;
+import desafio.deliver.api_conta_pagar.dto.request.RequestCreateAccountPayable;
 import desafio.deliver.api_conta_pagar.entity.AccountPayableEntity;
 import desafio.deliver.api_conta_pagar.exception.BusinessRuleException;
 import desafio.deliver.api_conta_pagar.exception.enums.ErrorCode;
@@ -12,9 +12,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
+import java.util.List;
 
 @Service
 public class AccountPayableServiceImpl implements AccountPayableService{
@@ -28,11 +27,23 @@ public class AccountPayableServiceImpl implements AccountPayableService{
     @Override
     public void register(RequestCreateAccountPayable requestBody) {
         try {
+            if (requestBody.getName() == null || requestBody.getName().isBlank()) {
+                throw new BusinessRuleException(ErrorCode.INVALID_NAME);
+            }
+
+            if (requestBody.getOriginationValue() == null || requestBody.getOriginationValue().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new BusinessRuleException(ErrorCode.INVALID_ORIGINATION_VALUE);
+            }
+
             LocalDate dueDate = requestBody.getDueDate();
             LocalDate paymentDate = requestBody.getPaymentDate();
 
             if (dueDate == null) {
                 throw new BusinessRuleException(ErrorCode.INVALID_DUE_DATE);
+            }
+
+            if (paymentDate == null) {
+                throw new BusinessRuleException(ErrorCode.INVALID_PAYMENT_DATE);
             }
 
             if (paymentDate.isBefore(dueDate)) {
@@ -74,6 +85,15 @@ public class AccountPayableServiceImpl implements AccountPayableService{
             throw e;
         } catch (Exception e) {
             throw new RuntimeException("Erro ao registrar conta a pagar: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<AccountPayableEntity> getAllAccounts() {
+        try {
+            return accountPayableRepository.findAll();
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar contas a pagar: " + e.getMessage(), e);
         }
     }
 }
