@@ -30,13 +30,27 @@ public class AccountPayableServiceImpl implements AccountPayableService{
 
         long numberOfDays = ChronoUnit.DAYS.between(dueDate, paymentDate);
 
+        FeesResult feesResult = feesService.calculateFineAndInterest((int) numberOfDays);
+        BigDecimal fine = requestBody.getOriginationValue()
+                .multiply(BigDecimal.valueOf(feesResult.getFine() / 100));
+
+        BigDecimal fineAmount = requestBody.getOriginationValue()
+                .add(fine);
+
+        BigDecimal dailyInterest = fineAmount
+                .multiply(BigDecimal.valueOf(feesResult.getInterestPerDay() / 100));
+
+        BigDecimal totalInterest = dailyInterest.multiply(BigDecimal.valueOf(numberOfDays));
+
+        BigDecimal adjustedValue = fineAmount.add(totalInterest);
+
         AccountPayableEntity entity = AccountPayableEntity.builder()
                 .name(requestBody.getName())
                 .originationValue(requestBody.getOriginationValue())
                 .dueDate(java.sql.Date.valueOf(dueDate))
                 .paymentDate(java.sql.Date.valueOf(paymentDate))
                 .daysBetween(numberOfDays)
-                //.adjustedValue(10.50)
+                .adjustedValue(adjustedValue.setScale(2, RoundingMode.HALF_UP))
                 .build();
         accountPayableRepository.save(entity);
     }
