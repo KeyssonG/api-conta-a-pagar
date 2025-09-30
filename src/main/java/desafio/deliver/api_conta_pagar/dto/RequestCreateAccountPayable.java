@@ -1,10 +1,13 @@
 package desafio.deliver.api_conta_pagar.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -14,7 +17,8 @@ import java.util.Date;
 public class RequestCreateAccountPayable {
 
     private String name;
-    private String originationValue;
-    private Date dueDate;
-    private Date paymentDate;
+    private BigDecimal originationValue;
+
+    private LocalDate dueDate;
+    private LocalDate paymentDate;
 }

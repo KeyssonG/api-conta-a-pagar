@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -19,9 +20,16 @@ public class AccountPayableEntity {
     private Long id;
 
     private String name;
-    private String originationValue;
+    private BigDecimal originationValue;
+
+    @Column(name = "adjusted_value")
+    private BigDecimal adjustedValue;
+
     @Temporal(TemporalType.DATE)
     private Date dueDate;
     @Temporal(TemporalType.DATE)
     private Date paymentDate;
+
+    @Column(name = "days_between")
+    private Long daysBetween;
 }
