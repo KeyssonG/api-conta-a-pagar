@@ -14,7 +14,7 @@ public class FeesServiceImpl implements FeesService {
         } else if (DaysOverdue > 3 && DaysOverdue < 5) {
             return new FeesResult(3.0, 0.2);
 
-        } else if (DaysOverdue > 5) {
+        } else if (DaysOverdue >= 5) {
             return new FeesResult(5.0, 0.3);
         }
         return new FeesResult(0.0, 0.0);
